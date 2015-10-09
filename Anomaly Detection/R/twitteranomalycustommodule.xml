@@ -1,0 +1,118 @@
+<!-- Defined a module using an R Script -->
+<Module name="Twitter Anomaly Detection 2.0">
+    <Owner>Tejaswi Redkar</Owner>
+    <Description>Detects Anomalies in Time Series Data. For more information, please visit https://github.com/twitter/AnomalyDetection. </Description>
+
+<!-- Specify the base language, script file and R function to use for this module. -->      
+    <Language name="R" sourceFile="azureml_ts_anom_detection.R" entryPoint="AnomalyDetectionTsw" />  
+
+<!-- Define module input and output ports -->
+<!-- Note: The values of the id attributes in the Input and Arg elements must match the parameter names in the R Function CustomAddRows defined in CustomAddRows.R. -->
+    <Ports>
+        <Input id="dataset1" name="Dataset 1" type="DataTable">
+            <Description>Input dataset with two columns [timestamp, value]</Description>
+        </Input>
+       
+        <Output id="dataset" name="Dataset" type="DataTable">
+            <Description>List of anomalies found in the dataset</Description>
+        </Output>
+		<Output id="deviceOutput" name="View Port" type="Visualization">
+          <Description>View the R console graphics device output.</Description>
+        </Output>
+    </Ports>
+
+<!-- Define module parameters -->
+                    
+    <Arguments>
+      <Arg id="max_anoms" name="Max anomalies to return" type="double">
+       <Properties min="0.00" max="0.999" default="0.10" />
+       <Description>Maximum number of anomalies that S-H-ESD will detect as a percentage of the data (default is 0.10).</Description>
+      </Arg>
+	  
+	 <Arg id="direction" name="Direction" type="DropDown">
+        <Properties default="both">
+           <Item id="pos" name="Positive side of X-axis"/>
+           <Item id="neg" name="Negative side of X-axis"/>
+            <Item id="both" name="Both sides of X-axis"/>
+         </Properties>
+        <Description>Directionality of the anomalies to be detected.</Description>
+      </Arg>  
+	  
+	  <Arg id="alpha" name="Alpha" type="double">
+       <Properties min="0.01" max="0.1" default="0.05" />
+       <Description>The level of statistical significance with which to accept or reject anomalies.</Description>
+      </Arg>
+	  
+	
+	 <Arg id="only_last" name="Only Last" type="DropDown">
+        <Properties default="None" >
+          
+		  <Item id="None" name="None"/>
+           <Item id="day" name="Day"/>
+            <Item id="hr" name="Hour"/>
+         </Properties>
+         <Description>Find and report anomalies only within the last day or hr in the time series.</Description>
+      </Arg>  
+	  
+		  
+	   <Arg id="threshold" name="Threshold" type="DropDown">
+        <Properties default="None">
+           <Item id="None" name="None"/>
+           <Item id="med_max" name="The median of the daily max values"/>
+            <Item id="p95" name="The 95th percentile of the daily max values"/>
+			<Item id="p99" name="The 99th percentile of the daily max values"/>
+         </Properties>
+        <Description>Only report positive going anoms above the threshold specified. </Description>
+      </Arg>  
+	  
+	  <Arg id="e_value" name="Add Expected Value Column" type="bool">
+        <Properties default="false" />
+        <Description>Add an additional column to the anoms output containing the expected value.</Description>
+      </Arg>
+	  
+	   <Arg id="longterm" name="Longterm Time Series" type="bool">
+        <Properties default="false" />
+        <Description>Increase anom detection efficacy for time series that are greater than a month. This option should be set when the input time series is longer than a month. The option enables the approach described in Vallis, Hochenbaum, and Kejariwal (2014).</Description>
+      </Arg>
+	  
+	  <Arg id="piecewise_median_period_weeks" name="Piecewise median time window" type="int">
+        <Properties default="2" />
+        <Description>piecewise_median_period_weeks The piecewise median time window as described in Vallis, Hochenbaum, and Kejariwal (2014). Defaults to 2.</Description>
+      </Arg>
+	  
+	  <Arg id="plot" name="Create Plot" type="bool">
+        <Properties default="false" />
+        <Description>A flag indicating if a plot with both the time series and the estimated anoms, indicated by circles, should also be returned.</Description>
+      </Arg>
+	  
+	   <Arg id="y_log" name="Log Scaling" type="bool">
+        <Properties default="false" />
+        <Description>Apply log scaling to the y-axis. This helps with viewing plots that have extremely large positive anomalies relative to the rest of the data.</Description>
+      </Arg>
+	  
+	   <Arg id="xlabel" name="X-axis label" type="string">
+       <Properties default="None" isOptional="true" />
+       <Description>X-axis label to be added to the output plot.</Description>
+      </Arg>
+	  
+	   <Arg id="ylabel" name="Y-axis label" type="string">
+       <Properties default="count" isOptional="true" />
+       <Description>Y-axis label to be added to the output plot. Default is 'count'</Description>
+      </Arg>
+	  
+	   <Arg id="title" name="Title for plot" type="string">
+       <Properties default="Anomalies" isOptional="true" />
+       <Description>Title for the output plot.</Description>
+      </Arg>
+	  
+	   <Arg id="verbose" name="Verbose" type="bool">
+        <Properties default="false" />
+        <Description>Enable debug messages.</Description>
+      </Arg>
+	  
+	   <Arg id="narm" name="Remove NAs" type="bool">
+        <Properties default="false" />
+        <Description>Remove any NAs in timestamps.(default: FALSE)</Description>
+      </Arg>
+    </Arguments>
+</Module>
