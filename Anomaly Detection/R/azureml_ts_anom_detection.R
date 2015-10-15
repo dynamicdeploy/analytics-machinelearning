@@ -1,3 +1,6 @@
+#Copyright (c) Microsoft.  All rights reserved.  
+#Licensed under the MIT License.  
+#See LICENSE in the root of the repository for license information 
 #' Anomaly Detection Using Seasonal Hybrid ESD Test
 #'
 #' A technique for detecting anomalies in seasonal univariate time series where the input is a
